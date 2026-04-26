@@ -10,10 +10,6 @@ from langsmith import traceable
 MAX_ITERATIONS = 10
 MODEL = "qwen3:1.7b"
 
-
-# --- Tools (LangChain @tool decorator) ---
-
-
 @tool
 def get_product_price(product: str) -> float:
     """Look up the price of a product in the catalog."""
@@ -21,21 +17,18 @@ def get_product_price(product: str) -> float:
     prices = {"laptop": 1299.99, "headphones": 149.95, "keyboard": 89.50}
     return prices.get(product, 0)
 
-
 @tool
 def apply_discount(price: float, discount_tier: str) -> float:
     """Apply a discount tier to a price and return the final price.
     Available tiers: bronze, silver, gold."""
-    print(f"    >> Executing apply_discount(price={price}, discount_tier='{discount_tier}')")
+    print(f"   >> Executing apply_discount(price={price}, discount_tier='{discount_tier}')")
     discount_percentages = {"bronze": 5, "silver": 12, "gold": 23}
     discount = discount_percentages.get(discount_tier, 0)
     return round(price * (1 - discount / 100), 2)
 
+# --- AGENT LOOP ----
 
-# --- Agent Loop ---
-
-
-@traceable(name="LangChain Agent Loop")
+@traceable(name='react_under_the_hood')
 def run_agent(question: str):
     tools = [get_product_price, apply_discount]
     tools_dict = {t.name: t for t in tools}
@@ -103,8 +96,8 @@ def run_agent(question: str):
     print("ERROR: Max iterations reached without a final answer")
     return None
 
-
 if __name__ == "__main__":
-    print("Hello LangChain Agent (.bind_tools)!")
+    print("Hello Langchain Agent (.build_tools)!")
     print()
-    result = run_agent("What is the price of a laptop after applying a gold discount?")
+
+    result = run_agent("Please check laptop price. Then and tell the price after applying a gold discount?")
